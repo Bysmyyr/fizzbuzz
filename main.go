@@ -7,10 +7,10 @@ import (
 	"unsafe"
 )
 
-const buffSize = 40000000
-const innerloop = 500
+const buffSize = 200000000
+const innerloop = 10000
 
-const routines = 3
+const routines = 6
 
 func main() {
 	eightZeroLock := &sync.Mutex{}
