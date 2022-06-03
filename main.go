@@ -3,19 +3,40 @@ package main
 import (
 	"os"
 	"strconv"
+	"sync"
 	"unsafe"
 )
 
 const buffSize = 40000000
+const innerloop = 500
+
+const routines = 3
 
 func main() {
+	eightZeroLock := &sync.Mutex{}
+	startLock := eightZeroLock
+	endLock := &sync.Mutex{}
+	endLock.Lock()
+	for i := 0; i < routines-1; i++ {
+		go routine(i, startLock, endLock)
+		startLock = endLock
+		endLock = &sync.Mutex{}
+		endLock.Lock()
+	}
+	go routine(routines-1, startLock, eightZeroLock)
+	wg := sync.WaitGroup{}
+	wg.Add(1)
+	wg.Wait()
+}
 
-	counter := 0
+func routine(num int, start, end *sync.Mutex) {
+	counter := num * 15 * innerloop
+
 	var sb Builder
 	sb.Grow(buffSize)
 	for {
 
-		for i := 0; i < 5000; i++ {
+		for i := 0; i < innerloop; i++ {
 			sb.WriteString(strconv.Itoa((counter + 1)))
 			sb.WriteString("\n")
 			sb.WriteString(strconv.Itoa((counter + 2)))
@@ -35,8 +56,12 @@ func main() {
 
 			counter += 15
 		}
+		start.Lock()
 		os.Stdout.Write([]byte(sb.String()))
+		end.Unlock()
 		sb.buf = sb.buf[:0]
+		counter += 15 * (routines - 1) * innerloop
+
 	}
 
 }
