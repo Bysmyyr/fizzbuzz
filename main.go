@@ -8,9 +8,9 @@ import (
 )
 
 const buffSize = 200000000
-const innerloop = 10000
+const innerloop = 25000
 
-const routines = 6
+const routines = 12
 
 func main() {
 	eightZeroLock := &sync.Mutex{}
@@ -37,33 +37,32 @@ func routine(num int, start, end *sync.Mutex) {
 	for {
 
 		for i := 0; i < innerloop; i++ {
-			sb.WriteString(strconv.Itoa((counter + 1)))
+			sb.WriteString(strconv.Itoa(counter + 1))
 			sb.WriteString("\n")
-			sb.WriteString(strconv.Itoa((counter + 2)))
+			sb.WriteString(strconv.Itoa(counter + 2))
 			sb.WriteString("\nFizz\n")
-			sb.WriteString(strconv.Itoa((counter + 4)))
+			sb.WriteString(strconv.Itoa(counter + 4))
 			sb.WriteString("\nBuzz\nFizz\n")
-			sb.WriteString(strconv.Itoa((counter + 7)))
+			sb.WriteString(strconv.Itoa(counter + 7))
 			sb.WriteString("\n")
-			sb.WriteString(strconv.Itoa((counter + 8)))
+			sb.WriteString(strconv.Itoa(counter + 8))
 			sb.WriteString("\nFizz\nBuzz\n")
-			sb.WriteString(strconv.Itoa((counter + 11)))
+			sb.WriteString(strconv.Itoa(counter + 11))
 			sb.WriteString("\nFizz\n")
-			sb.WriteString(strconv.Itoa((counter + 13)))
+			sb.WriteString(strconv.Itoa(counter + 13))
 			sb.WriteString("\n")
-			sb.WriteString(strconv.Itoa((counter + 14)))
+			sb.WriteString(strconv.Itoa(counter + 14))
 			sb.WriteString("\nFizzBuzz\n")
 
 			counter += 15
 		}
 		start.Lock()
-		os.Stdout.Write([]byte(sb.String()))
+		os.Stdout.WriteString((sb.String()))
 		end.Unlock()
 		sb.buf = sb.buf[:0]
 		counter += 15 * (routines - 1) * innerloop
 
 	}
-
 }
 
 // Copyright 2017 The Go Authors. All rights reserved.
