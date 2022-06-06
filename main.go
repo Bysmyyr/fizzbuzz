@@ -65,7 +65,7 @@ func routine(num int, start, end *sync.Mutex) {
 	}
 }
 
-// After this copied from go stringBuilder
+// After this copied from go stringBuilder(some lines removed)
 // Copyright 2017 The Go Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
@@ -121,7 +121,6 @@ func (b *Builder) grow(n int) {
 // another n bytes. After Grow(n), at least n bytes can be written to b
 // without another allocation. If n is negative, Grow panics.
 func (b *Builder) Grow(n int) {
-	b.copyCheck()
 	if n < 0 {
 		panic("strings.Builder.Grow: negative count")
 	}
@@ -130,18 +129,9 @@ func (b *Builder) Grow(n int) {
 	}
 }
 
-// Write appends the contents of p to b's buffer.
-// Write always returns len(p), nil.
-func (b *Builder) Write(p []byte) (int, error) {
-	b.copyCheck()
-	b.buf = append(b.buf, p...)
-	return len(p), nil
-}
-
 // WriteString appends the contents of s to b's buffer.
 // It returns the length of s and a nil error.
 func (b *Builder) WriteString(s string) (int, error) {
-	b.copyCheck()
 	b.buf = append(b.buf, s...)
 	return len(s), nil
 }
